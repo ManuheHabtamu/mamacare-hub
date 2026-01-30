@@ -1,12 +1,18 @@
 import BabyGrowth from "../models/babygrowth.js";
 
 export const getBabyGrowthData = async (req, res, sendJson) => {
-    const userId = req.user?.userId;
+    const userId = req.user && req.user.userId;
     if (!userId) return sendJson(res, 401, { error: "Unauthorized" });
 
     let data = await BabyGrowth.findOne({ userId });
     if (!data) {
-        data = await BabyGrowth.create({ userId, babyInfo: {}, growthRecords: [], milestones: {}, healthNotes: {} });
+        data = await BabyGrowth.create({
+            userId,
+            babyInfo: {},
+            growthRecords: [],
+            milestones: {},
+            healthNotes: {}
+        });
     }
     sendJson(res, 200, data);
 };

@@ -1,8 +1,8 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext.jsx';
-import logo from '../assets/logo.png';
-import '../stylesheets/AuthNavbar.css';
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext.jsx";
+import logo from "../assets/logo.png";
+import "../stylesheets/AuthNavbar.css";
 
 const AuthNavbar = () => {
     const { logout } = useAuth();
@@ -10,7 +10,7 @@ const AuthNavbar = () => {
 
     const handleLogout = () => {
         logout();
-        navigate('/');
+        navigate("/");
     };
 
     return (

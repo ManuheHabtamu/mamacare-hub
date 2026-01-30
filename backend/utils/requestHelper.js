@@ -1,16 +1,13 @@
-export const sendJson = (res, status, data) => {
-    res.writeHead(status, { "Content-Type": "application/json" });
-    res.end(JSON.stringify(data));
-};
+export const sendJson = (res, status, data) =>
+    res.writeHead(status, { "Content-Type": "application/json" }).end(JSON.stringify(data));
 
 export const parseBody = (req) =>
     new Promise((resolve, reject) => {
-        let body = "";
-        req.on("data", chunk => (body += chunk));
-        req.on("end", () => {
-            if (!body) return resolve({});
+        let chunks = [];
+        req.on("data", (c) => chunks.push(c)).on("end", () => {
+            const body = Buffer.concat(chunks).toString();
             try {
-                resolve(JSON.parse(body));
+                resolve(body ? JSON.parse(body) : {});
             } catch {
                 reject(new Error("Invalid JSON"));
             }

@@ -38,7 +38,7 @@ function BabyGrowthTracker() {
         const babyInfo = {
             name: formData.get("name"),
             dob: formData.get("dob"),
-            gender: formData.get("gender"),
+            gender: formData.get("gender")
         };
         try {
             const res = await api.put("/babygrowth", { babyInfo });
@@ -55,8 +55,7 @@ function BabyGrowthTracker() {
         const record = {
             date: formData.get("date"),
             weight: parseFloat(formData.get("weight")),
-            height: parseFloat(formData.get("height")),
-            headCircumference: parseFloat(formData.get("head")),
+            height: parseFloat(formData.get("height"))
         };
         try {
             const res = await api.post("/babygrowth/records", record);
@@ -75,7 +74,12 @@ function BabyGrowthTracker() {
         return `${weeks} weeks (${months} months)`;
     };
 
-    if (loading) return <div className="tracker-container"><h1>Loading...</h1></div>;
+    if (loading)
+        return (
+            <div className="tracker-container">
+                <h1>Loading...</h1>
+            </div>
+        );
 
     return (
         <div className="tracker-container">
@@ -91,11 +95,19 @@ function BabyGrowthTracker() {
                     <form onSubmit={handleInfoUpdate}>
                         <div className="input-group">
                             <label>Name</label>
-                            <input name="name" defaultValue={data?.babyInfo?.name} placeholder="Baby Name" />
+                            <input
+                                name="name"
+                                defaultValue={data?.babyInfo?.name}
+                                placeholder="Baby Name"
+                            />
                         </div>
                         <div className="input-group">
                             <label>Date of Birth</label>
-                            <input name="dob" type="date" defaultValue={data?.babyInfo?.dob?.split("T")[0]} />
+                            <input
+                                name="dob"
+                                type="date"
+                                defaultValue={data?.babyInfo?.dob?.split("T")[0]}
+                            />
                         </div>
                         <div className="input-group">
                             <label>Gender</label>
@@ -106,7 +118,9 @@ function BabyGrowthTracker() {
                             </select>
                         </div>
                         <p className="age-display">Age: {calculateAge(data?.babyInfo?.dob)}</p>
-                        <button type="submit" className="save-btn">Update Info</button>
+                        <button type="submit" className="save-btn">
+                            Update Info
+                        </button>
                     </form>
                 </section>
 
@@ -115,25 +129,61 @@ function BabyGrowthTracker() {
                     <h2>BMI Calculator (Baby/Toddler)</h2>
                     <div className="input-group">
                         <label>Weight (kg)</label>
-                        <input type="number" step="0.1" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="0.0" />
+                        <input
+                            type="number"
+                            step="0.1"
+                            value={weight}
+                            onChange={(e) => setWeight(e.target.value)}
+                            placeholder="0.0"
+                        />
                     </div>
                     <div className="input-group">
                         <label>Height (cm)</label>
-                        <input type="number" step="0.1" value={height} onChange={(e) => setHeight(e.target.value)} placeholder="0.0" />
+                        <input
+                            type="number"
+                            step="0.1"
+                            value={height}
+                            onChange={(e) => setHeight(e.target.value)}
+                            placeholder="0.0"
+                        />
                     </div>
-                    <button onClick={calculateBMI} className="calc-btn">Calculate BMI</button>
-                    {bmi && <p className="bmi-result">BMI: <strong>{bmi}</strong></p>}
+                    <button onClick={calculateBMI} className="calc-btn">
+                        Calculate BMI
+                    </button>
+                    {bmi && (
+                        <p className="bmi-result">
+                            BMI: <strong>{bmi}</strong>
+                        </p>
+                    )}
                 </section>
 
                 {/* Records Section */}
                 <section className="tracker-card records-section">
                     <h2>Growth Records</h2>
                     <form onSubmit={handleAddRecord} className="record-form">
-                        <input name="date" type="date" required defaultValue={new Date().toISOString().split("T")[0]} />
-                        <input name="weight" type="number" step="0.1" placeholder="Wt (kg)" required />
-                        <input name="height" type="number" step="0.1" placeholder="Ht (cm)" required />
-                        <input name="head" type="number" step="0.1" placeholder="Head (cm)" required />
-                        <button type="submit" className="add-btn">Add Record</button>
+                        <input
+                            name="date"
+                            type="date"
+                            required
+                            defaultValue={new Date().toISOString().split("T")[0]}
+                        />
+                        <input
+                            name="weight"
+                            type="number"
+                            step="0.1"
+                            placeholder="Wt (kg)"
+                            required
+                        />
+                        <input
+                            name="height"
+                            type="number"
+                            step="0.1"
+                            placeholder="Ht (cm)"
+                            required
+                        />
+                        <button type="submit" className="add-btn">
+                            Add Record
+                        </button>
                     </form>
                     <div className="records-list">
                         <table>
@@ -142,23 +192,23 @@ function BabyGrowthTracker() {
                                     <th>Date</th>
                                     <th>Wt</th>
                                     <th>Ht</th>
-                                    <th>Head</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {data?.growthRecords?.slice().reverse().map((r, i) => (
-                                    <tr key={i}>
-                                        <td>{new Date(r.date).toLocaleDateString()}</td>
-                                        <td>{r.weight}kg</td>
-                                        <td>{r.height}cm</td>
-                                        <td>{r.headCircumference}cm</td>
-                                    </tr>
-                                ))}
+                                {data?.growthRecords
+                                    ?.slice()
+                                    .reverse()
+                                    .map((r, i) => (
+                                        <tr key={i}>
+                                            <td>{new Date(r.date).toLocaleDateString()}</td>
+                                            <td>{r.weight}kg</td>
+                                            <td>{r.height}cm</td>
+                                        </tr>
+                                    ))}
                             </tbody>
                         </table>
                     </div>
                 </section>
-
             </div>
         </div>
     );

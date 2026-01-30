@@ -1,25 +1,24 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import '../stylesheets/Auth.css';
-import NavbarMinimal from '../Components/NavbarMinimal.jsx';
-import { useAuth } from '../context/AuthContext.jsx';
+import "../stylesheets/Auth.css";
+import NavbarMinimal from "../Components/NavbarMinimal.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 import api from "../utils/api.js";
-
 
 const Auth = () => {
     const location = useLocation();
-    const [isLogin, setIsLogin] = useState(location.pathname !== '/signup');
+    const [isLogin, setIsLogin] = useState(location.pathname !== "/signup");
     const navigate = useNavigate();
 
     const { login } = useAuth();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        confirmPassword: ""
     });
 
     const handleChange = (e) => {
@@ -39,7 +38,7 @@ const Auth = () => {
             if (isLogin) {
                 // Login
                 setLoading(true);
-                const response = await api.post('/auth/login', {
+                const response = await api.post("/auth/login", {
                     email: formData.email,
                     password: formData.password
                 });
@@ -55,14 +54,14 @@ const Auth = () => {
 
                 setLoading(true);
 
-                await api.post('/users', {
+                await api.post("/users", {
                     firstName: formData.firstName,
                     lastName: formData.lastName,
                     email: formData.email,
                     password: formData.password
                 });
 
-                const response = await api.post('/auth/login', {
+                const response = await api.post("/auth/login", {
                     email: formData.email,
                     password: formData.password
                 });
@@ -81,10 +80,7 @@ const Auth = () => {
         <div className="page">
             <NavbarMinimal />
             <div className="card">
-
-                <h2 className="title">
-                    {isLogin ? "Login" : "Sign Up"}
-                </h2>
+                <h2 className="title">{isLogin ? "Login" : "Sign Up"}</h2>
 
                 {/* Toggle Buttons */}
                 <div className="toggle">
@@ -109,23 +105,55 @@ const Auth = () => {
                         <div className="name-row">
                             <div className="input-group">
                                 <label>First Name</label>
-                                <input type="text" name="firstName" placeholder="First Name" className="input" value={formData.firstName} onChange={handleChange} required />
+                                <input
+                                    type="text"
+                                    name="firstName"
+                                    placeholder="First Name"
+                                    className="input"
+                                    value={formData.firstName}
+                                    onChange={handleChange}
+                                    required
+                                />
                             </div>
                             <div className="input-group">
                                 <label>Last Name</label>
-                                <input type="text" name="lastName" placeholder="Last Name" className="input" value={formData.lastName} onChange={handleChange} required />
+                                <input
+                                    type="text"
+                                    name="lastName"
+                                    placeholder="Last Name"
+                                    className="input"
+                                    value={formData.lastName}
+                                    onChange={handleChange}
+                                    required
+                                />
                             </div>
                         </div>
                     )}
 
                     <div className="input-group">
                         <label>Email Address</label>
-                        <input type="email" name="email" placeholder="email@example.com" className="input" value={formData.email} onChange={handleChange} required />
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="email@example.com"
+                            className="input"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                        />
                     </div>
 
                     <div className="input-group">
                         <label>Password</label>
-                        <input type="password" name="password" placeholder="••••••••" className="input" value={formData.password} onChange={handleChange} required />
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="••••••••"
+                            className="input"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                        />
                     </div>
 
                     {!isLogin && (
@@ -143,17 +171,18 @@ const Auth = () => {
                         </div>
                     )}
 
-                    {isLogin && (
-                        <p className="forgot">Lost Password? Click Here</p>
+                    {isLogin && <p className="forgot">Lost Password? Click Here</p>}
+
+                    {error && (
+                        <p className="forgot" style={{ color: "#dc2626" }}>
+                            {error}
+                        </p>
                     )}
 
-                    {error && <p className="forgot" style={{ color: "#dc2626" }}>{error}</p>}
-
                     <button type={"submit"} className="submit btnPrimary" disabled={loading}>
-                        {loading ? "Please wait..." : (isLogin ? "Confirm Login" : "Confirm Sign Up")}
+                        {loading ? "Please wait..." : isLogin ? "Confirm Login" : "Confirm Sign Up"}
                     </button>
                 </form>
-
             </div>
         </div>
     );

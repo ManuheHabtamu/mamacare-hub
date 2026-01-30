@@ -1,23 +1,23 @@
-import React from 'react'; // Added React import
-import { Link } from 'react-router-dom';
-import ButtonPrimary from '../Components/Button.jsx';
-import ButtonSecondary from '../Components/ButtonSecondary.jsx';
-import '../stylesheets/Landing.css';
-import mother from '../assets/mother-reading.webp';
-import hospital1 from '../assets/hospital_logo1.png';
-import hospital2 from '../assets/hospital_logo2.png';
-import hospital3 from '../assets/hospital_logo3.png';
-import hospital4 from '../assets/hospital_logo4.png';
-import hospital5 from '../assets/hospital_logo5.png';
+import React from "react"; // Added React import
+import { Link } from "react-router-dom";
+import ButtonPrimary from "../Components/Button.jsx";
+import ButtonSecondary from "../Components/ButtonSecondary.jsx";
+import "../stylesheets/Landing.css";
+import mother from "../assets/mother-reading.webp";
+import hospital1 from "../assets/hospital_logo1.png";
+import hospital2 from "../assets/hospital_logo2.png";
+import hospital3 from "../assets/hospital_logo3.png";
+import hospital4 from "../assets/hospital_logo4.png";
+import hospital5 from "../assets/hospital_logo5.png";
 
-import prenatal from '../assets/prenatal.webp';
-import postnatal from '../assets/postnatal.webp';
-import support from '../assets/support.jpg';
+import prenatal from "../assets/prenatal.webp";
+import postnatal from "../assets/postnatal.webp";
+import support from "../assets/support.jpg";
 
-import confid from '../assets/confid.jpg';
-import community from '../assets/commun.jpg';
-import health from '../assets/healthcha.jpg';
-import launch from '../assets/launch.jpg';
+import confid from "../assets/confid.jpg";
+import community from "../assets/commun.jpg";
+import health from "../assets/healthcha.jpg";
+import launch from "../assets/launch.jpg";
 
 const Landing = () => {
     return (
@@ -26,13 +26,18 @@ const Landing = () => {
                 <section className="Hero">
                     <div className="hero-content">
                         <h1>Welcome to MamaCare Hub</h1>
-                        <p>Your trusted Companion for pregnancy information, health tips, and emotional
-                            support. We're here to walk with you every step of the way toward a safe,
-                            joyful, and confident journey into motherhood.
+                        <p>
+                            Your trusted Companion for pregnancy information, health tips, and
+                            emotional support. We're here to walk with you every step of the way
+                            toward a safe, joyful, and confident journey into motherhood.
                         </p>
                         <div className="hero-btns">
-                            <Link to="/contact"><ButtonPrimary text="Get Free Consultation Now" /></Link>
-                            <Link to="/signup"><ButtonSecondary text="Join Our Community" /></Link>
+                            <Link to="/contact">
+                                <ButtonPrimary text="Get Free Consultation Now" />
+                            </Link>
+                            <Link to="/signup">
+                                <ButtonSecondary text="Join Our Community" />
+                            </Link>
                         </div>
                     </div>
 
@@ -99,8 +104,13 @@ const Landing = () => {
                         </div>
                         <div className="service-content">
                             <h3>Prenatal Care</h3>
-                            <p>Personalized check-ups, nutrition advice, and emotional support for a healthy pregnancy.</p>
-                            <Link to="/contact" className="service-link">Learn More →</Link>
+                            <p>
+                                Personalized check-ups, nutrition advice, and emotional support for
+                                a healthy pregnancy.
+                            </p>
+                            <Link to="/contact" className="service-link">
+                                Learn More →
+                            </Link>
                         </div>
                     </div>
 
@@ -110,8 +120,13 @@ const Landing = () => {
                         </div>
                         <div className="service-content">
                             <h3>Postnatal & Newborn Care</h3>
-                            <p>Expert recovery guidance, breastfeeding support, and newborn health monitoring.</p>
-                            <Link to="/contact" className="service-link">Learn More →</Link>
+                            <p>
+                                Expert recovery guidance, breastfeeding support, and newborn health
+                                monitoring.
+                            </p>
+                            <Link to="/contact" className="service-link">
+                                Learn More →
+                            </Link>
                         </div>
                     </div>
 
@@ -121,8 +136,13 @@ const Landing = () => {
                         </div>
                         <div className="service-content">
                             <h3>Family & Community Support</h3>
-                            <p>Group sessions, peer connections, and family wellness workshops for stronger bonds.</p>
-                            <Link to="/contact" className="service-link">Learn More →</Link>
+                            <p>
+                                Group sessions, peer connections, and family wellness workshops for
+                                stronger bonds.
+                            </p>
+                            <Link to="/contact" className="service-link">
+                                Learn More →
+                            </Link>
                         </div>
                     </div>
                 </section>
@@ -147,14 +167,22 @@ const Landing = () => {
                         <div className="step-card">
                             <div className="step-number">3</div>
                             <h3>Thrive Together</h3>
-                            <p>Get ongoing care, connect with other mothers, and feel supported every day.</p>
+                            <p>
+                                Get ongoing care, connect with other mothers, and feel supported
+                                every day.
+                            </p>
                         </div>
                     </div>
                 </section>
 
                 <section id="about" className="about-us">
                     <h2>About Us</h2>
-                    <p>MamaCare Hub was founded to support mothers and families with compassionate, community-based care in Ethiopia. We believe every mother deserves expert guidance, emotional support, and a strong network — without judgment or high costs, ensuring she never walks alone.</p>
+                    <p>
+                        MamaCare Hub was founded to support mothers and families with compassionate,
+                        community-based care in Ethiopia. We believe every mother deserves expert
+                        guidance, emotional support, and a strong network — without judgment or high
+                        costs, ensuring she never walks alone.
+                    </p>
                 </section>
 
                 <section className="final-cta">
@@ -162,7 +190,9 @@ const Landing = () => {
                         <h2>Ready to Start Your Journey?</h2>
                         <p>Get Free Consultation or Join Our Support Community Today</p>
                         <div className="cta-buttons">
-                            <Link to="/signup"><ButtonPrimary text="Sign Up Free" /></Link>
+                            <Link to="/signup">
+                                <ButtonPrimary text="Sign Up Free" />
+                            </Link>
                             <Link to="/contact" className="cta-secondary-link">
                                 <ButtonSecondary text="Contact Us" />
                             </Link>
@@ -170,7 +200,7 @@ const Landing = () => {
                     </div>
                 </section>
             </div>
-        </> // Closed Fragment
+        </>
     );
 };
 

@@ -4,7 +4,7 @@
     background-color: var(--soft-pink);
     /* Light pink background */
     min-height: 100vh;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     color: var(--text-dark);
 }
 
@@ -59,7 +59,7 @@
     background: var(--white);
     border-radius: 12px;
     padding: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 8px var(--shadow-light);
     border: 1px solid var(--accent-pink);
 }
 
@@ -73,7 +73,7 @@
     align-items: flex-start;
     margin-bottom: 15px;
     padding-bottom: 15px;
-    border-bottom: 1px solid rgba(69, 25, 73, 0.12);
+    border-bottom: 1px solid var(--shadow-purple);
 }
 
 .essential-item:last-child {
@@ -129,12 +129,14 @@
     border: 1px solid var(--accent-pink);
     border-radius: 12px;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s;
 }
 
 .action-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 12px var(--shadow-medium);
 }
 
 .action-btn.primary {
@@ -254,7 +256,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: var(--overlay);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -267,5 +269,5 @@
     border-radius: 16px;
     width: 90%;
     max-width: 400px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 25px var(--shadow-medium);
 }

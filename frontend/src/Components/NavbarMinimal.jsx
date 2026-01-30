@@ -1,7 +1,7 @@
-import React from 'react';
-import '../stylesheets/NavbarMinimal.css';
-import logo from '../assets/logo.png';
-import { Link } from 'react-router-dom';
+import React from "react";
+import "../stylesheets/NavbarMinimal.css";
+import logo from "../assets/logo.png";
+import { Link } from "react-router-dom";
 
 const NavbarMinimal = () => {
     return (
@@ -10,7 +10,9 @@ const NavbarMinimal = () => {
                 <img src={logo} alt="MamaCare Logo" />
                 <span>MamaCare</span>
             </Link>
-            <Link to="/" className="nav-minimal-home">Home</Link>
+            <Link to="/" className="nav-minimal-home">
+                Home
+            </Link>
         </nav>
     );
 };

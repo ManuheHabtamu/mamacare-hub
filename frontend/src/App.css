@@ -1,3 +1,13 @@
 #root {
-  width: 100%;
+    width: 100%;
+}
+
+.app-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex: 1;
 }

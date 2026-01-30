@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../../utils/api.js";
+import { FaClock, FaMapMarkerAlt } from "react-icons/fa";
 import "../../stylesheets/Appointments.css";
 
 function Appointments() {
@@ -64,13 +65,24 @@ function Appointments() {
         // Form values will be set via defaultValue in JSX for simplicity
     };
 
-    if (loading) return <div className="appointments-container"><h1>Loading...</h1></div>;
+    if (loading)
+        return (
+            <div className="appointments-container">
+                <h1>Loading...</h1>
+            </div>
+        );
 
     return (
         <div className="appointments-container">
             <header className="appointments-header">
                 <h1>My Appointments</h1>
-                <button className="add-appt-btn" onClick={() => { setEditingId(null); setShowForm(!showForm); }}>
+                <button
+                    className="add-appt-btn"
+                    onClick={() => {
+                        setEditingId(null);
+                        setShowForm(!showForm);
+                    }}
+                >
                     {showForm ? "Close Form" : "+ Add Appointment"}
                 </button>
             </header>
@@ -82,26 +94,58 @@ function Appointments() {
                         <div className="form-grid">
                             <div className="input-group">
                                 <label>Date</label>
-                                <input name="date" type="date" required
-                                    defaultValue={editingId ? appointments.find(a => a._id === editingId)?.date?.split("T")[0] : ""}
+                                <input
+                                    name="date"
+                                    type="date"
+                                    required
+                                    defaultValue={
+                                        editingId
+                                            ? appointments
+                                                  .find((a) => a._id === editingId)
+                                                  ?.date?.split("T")[0]
+                                            : ""
+                                    }
                                 />
                             </div>
                             <div className="input-group">
                                 <label>Time</label>
-                                <input name="time" type="time" required
-                                    defaultValue={editingId ? appointments.find(a => a._id === editingId)?.time : ""}
+                                <input
+                                    name="time"
+                                    type="time"
+                                    required
+                                    defaultValue={
+                                        editingId
+                                            ? appointments.find((a) => a._id === editingId)?.time
+                                            : ""
+                                    }
                                 />
                             </div>
                             <div className="input-group full-width">
                                 <label>Description / Purpose</label>
-                                <input name="description" placeholder="e.g. Monthly Checkup with Dr. Smith" required
-                                    defaultValue={editingId ? appointments.find(a => a._id === editingId)?.description : ""}
+                                <input
+                                    name="description"
+                                    placeholder="e.g. Monthly Checkup with Dr. Smith"
+                                    required
+                                    defaultValue={
+                                        editingId
+                                            ? appointments.find((a) => a._id === editingId)
+                                                  ?.description
+                                            : ""
+                                    }
                                 />
                             </div>
                         </div>
                         <div className="form-actions">
-                            <button type="submit" className="save-btn">{editingId ? "Update" : "Schedule"}</button>
-                            <button type="button" className="cancel-btn" onClick={() => setShowForm(false)}>Cancel</button>
+                            <button type="submit" className="save-btn">
+                                {editingId ? "Update" : "Schedule"}
+                            </button>
+                            <button
+                                type="button"
+                                className="cancel-btn"
+                                onClick={() => setShowForm(false)}
+                            >
+                                Cancel
+                            </button>
                         </div>
                     </form>
                 </section>
@@ -113,22 +157,42 @@ function Appointments() {
                         <p>No appointments scheduled yet.</p>
                     </div>
                 ) : (
-                    appointments.slice().reverse().map(appt => (
-                        <div className="appointment-card" key={appt._id}>
-                            <div className="appt-date">
-                                <span className="day">{new Date(appt.date).getDate()}</span>
-                                <span className="month">{new Date(appt.date).toLocaleString('default', { month: 'short' })}</span>
+                    appointments
+                        .slice()
+                        .reverse()
+                        .map((appt) => (
+                            <div className="appointment-card" key={appt._id}>
+                                <div className="appt-date">
+                                    <span className="day">{new Date(appt.date).getDate()}</span>
+                                    <span className="month">
+                                        {new Date(appt.date).toLocaleString("default", {
+                                            month: "short"
+                                        })}
+                                    </span>
+                                </div>
+                                <div className="appt-details">
+                                    <h3>{appt.description}</h3>
+                                    <p>
+                                        <FaClock /> {appt.time} • <FaMapMarkerAlt />{" "}
+                                        {appt.location || "Main Clinic"}
+                                    </p>
+                                </div>
+                                <div className="appt-actions">
+                                    <button
+                                        onClick={() => startEdit(appt)}
+                                        className="edit-icon-btn"
+                                    >
+                                        Edit
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(appt._id)}
+                                        className="delete-icon-btn"
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
                             </div>
-                            <div className="appt-details">
-                                <h3>{appt.description}</h3>
-                                <p>🕒 {appt.time} • 📍 {appt.location || "Main Clinic"}</p>
-                            </div>
-                            <div className="appt-actions">
-                                <button onClick={() => startEdit(appt)} className="edit-icon-btn">Edit</button>
-                                <button onClick={() => handleDelete(appt._id)} className="delete-icon-btn">Delete</button>
-                            </div>
-                        </div>
-                    ))
+                        ))
                 )}
             </div>
         </div>

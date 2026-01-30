@@ -1,4 +1,6 @@
+import mongoose from "mongoose";
 import PregnancyProfile from "../models/pregnancyprofile.js";
+import User from "../models/user.js";
 
 const calculateCurrentWeek = (startDate) => {
     if (!startDate) return undefined;
@@ -21,22 +23,4 @@ export const getPregnancyData = async (req, res, sendJson) => {
 
     const profiles = await PregnancyProfile.find().populate("userId");
     sendJson(res, 200, profiles);
-};
-
-export const updatePregnancyProfile = async (req, res, body, sendJson) => {
-    const { userId, startDate, dueDate } = body || {};
-    if (!userId || !startDate || !dueDate) {
-        return sendJson(res, 400, { error: "userId, startDate, and dueDate are required" });
-    }
-
-    const currentWeek = calculateCurrentWeek(startDate);
-    const update = { ...body, currentWeek };
-
-    const profile = await PregnancyProfile.findOneAndUpdate(
-        { userId },
-        update,
-        { new: true, upsert: true, setDefaultsOnInsert: true }
-    );
-
-    sendJson(res, 200, profile);
 };

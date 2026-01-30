@@ -1,7 +1,8 @@
 import User from "../models/user.js";
-import { hashPassword, verifyPassword, signToken } from "../utils/auth.js";
+import { hashPassword, verifyPassword, signToken } from "../middleware/auth.js";
 
 /* ---------- User Controllers ---------- */
+//Return list of all users
 export const getAllUsers = async (req, res, sendJson) => {
     const users = await User.find().select("-passwordHash");
     sendJson(res, 200, users);
@@ -16,7 +17,7 @@ export const registerUser = async (req, res, body, sendJson) => {
 
     const user = await User.create({
         ...rest,
-        passwordHash: hashPassword(password),
+        passwordHash: hashPassword(password)
     });
 
     const userSafe = user.toObject();

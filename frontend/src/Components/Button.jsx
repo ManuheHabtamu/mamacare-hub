@@ -1,11 +1,8 @@
-import '../stylesheets/buttons.css';
+import "../stylesheets/buttons.css";
 
 const ButtonPrimary = ({ text, onClick }) => {
     return (
-        <button
-            onClick={onClick}
-            className={"btnBase btnPrimary"}
-        >
+        <button onClick={onClick} className={"btnBase btnPrimary"}>
             {text}
         </button>
     );

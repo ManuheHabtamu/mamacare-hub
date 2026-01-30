@@ -5,22 +5,22 @@ const userSchema = new mongoose.Schema(
         firstName: {
             type: String,
             required: true,
-            trim: true,
+            trim: true
         },
         lastName: {
             type: String,
             required: true,
-            trim: true,
+            trim: true
         },
         email: {
             type: String,
             required: true,
             unique: true,
-            lowercase: true,
+            lowercase: true
         },
         passwordHash: {
             type: String,
-            required: true,
+            required: true
         },
         phone: String,
         location: String,
@@ -28,8 +28,8 @@ const userSchema = new mongoose.Schema(
         lastLoginAt: Date,
         isActive: {
             type: Boolean,
-            default: true,
-        },
+            default: true
+        }
     },
     { timestamps: true }
 );

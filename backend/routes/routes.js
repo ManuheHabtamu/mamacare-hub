@@ -2,11 +2,9 @@ import { sendJson, parseBody } from "../utils/requestHelper.js";
 import * as userController from "../controllers/userController.js";
 import * as pregnancyController from "../controllers/pregnancyController.js";
 import * as weekController from "../controllers/weekController.js";
-import * as healthTipController from "../controllers/healthTipController.js";
-import * as reminderController from "../controllers/reminderController.js";
 import * as appointmentController from "../controllers/appointmentController.js";
+
 import * as contactController from "../controllers/contactController.js";
-import * as userTipController from "../controllers/userTipController.js";
 import * as babyGrowthController from "../controllers/babyGrowthController.js";
 import { requireAuth } from "../middleware/auth.js";
 
@@ -42,61 +40,9 @@ export const handleRoute = async (req, res) => {
             return pregnancyController.getPregnancyData(req, res, sendJson);
         }
 
-        if (path === "/pregnancy" && (method === "POST" || method === "PUT")) {
-            if (!requireAuth(req, res, sendJson)) return;
-            const body = await parseBody(req);
-            return pregnancyController.updatePregnancyProfile(req, res, body, sendJson);
-        }
-
         /* WEEKS */
         if (path === "/weeks" && method === "GET") {
             return weekController.getWeeklyUpdates(req, res, sendJson);
-        }
-
-        /* HEALTH TIPS */
-        if (path === "/healthtips" && method === "GET") {
-            return healthTipController.getHealthTips(req, res, sendJson);
-        }
-
-        if (path === "/healthtips" && method === "POST") {
-            const body = await parseBody(req);
-            return healthTipController.addHealthTip(req, res, body, sendJson);
-        }
-
-        if (path.startsWith("/healthtips/") && method === "PUT") {
-            const body = await parseBody(req);
-            const id = path.split("/")[2];
-            return healthTipController.updateHealthTip(req, res, id, body, sendJson);
-        }
-
-        if (path.startsWith("/healthtips/") && method === "DELETE") {
-            const id = path.split("/")[2];
-            return healthTipController.deleteHealthTip(req, res, id, sendJson);
-        }
-
-        /* REMINDERS */
-        if (path === "/reminders" && method === "GET") {
-            if (!requireAuth(req, res, sendJson)) return;
-            return reminderController.getUserReminders(req, res, sendJson);
-        }
-
-        if (path === "/reminders" && method === "POST") {
-            if (!requireAuth(req, res, sendJson)) return;
-            const body = await parseBody(req);
-            return reminderController.createReminder(req, res, body, sendJson);
-        }
-
-        if (path.startsWith("/reminders/") && method === "PUT") {
-            if (!requireAuth(req, res, sendJson)) return;
-            const body = await parseBody(req);
-            const id = path.split("/")[2];
-            return reminderController.updateReminder(req, res, id, body, sendJson);
-        }
-
-        if (path.startsWith("/reminders/") && method === "DELETE") {
-            if (!requireAuth(req, res, sendJson)) return;
-            const id = path.split("/")[2];
-            return reminderController.deleteReminder(req, res, id, sendJson);
         }
 
         /* APPOINTMENTS */
@@ -148,22 +94,12 @@ export const handleRoute = async (req, res) => {
             return babyGrowthController.addGrowthRecord(req, res, body, sendJson);
         }
 
-        /* USER TIP STATUS */
-        if (path === "/usertips" && method === "POST") {
-            if (!requireAuth(req, res, sendJson)) return;
-            const body = await parseBody(req);
-            return userTipController.trackUserTip(req, res, body, sendJson);
-        }
-
         /* NOT FOUND */
         sendJson(res, 404, { error: "Route not found" });
-
     } catch (err) {
         console.error(err);
-        sendJson(
-            res,
-            err.message === "Invalid JSON" ? 400 : 500,
-            { error: err.message || "Server error" }
-        );
+        sendJson(res, err.message === "Invalid JSON" ? 400 : 500, {
+            error: err.message || "Server error"
+        });
     }
 };

@@ -57,7 +57,7 @@
 .trust-builders {
     padding: 64px 5%;
     /* Reduced for compactness */
-    background: white;
+    background: var(--white);
     width: 100%;
 }
 
@@ -93,7 +93,9 @@
     /* From 2.5rem 1.5rem */
     border-radius: 16px;
     background: var(--soft-pink);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
 }
 
 .trust-icon {
@@ -196,7 +198,7 @@
     max-width: 360px;
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 20px var(--shadow-medium);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -245,7 +247,7 @@
 /* How it works */
 .how-it-works {
     background: var(--primary-purple);
-    color: white;
+    color: var(--white);
     padding: 48px 0;
     text-align: center;
     width: 100%;
@@ -288,7 +290,7 @@
     margin: 0 auto 20px;
     font-size: 18px;
     font-weight: 800;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 20px var(--overlay);
 }
 
 .step-card h3 {
@@ -326,7 +328,6 @@
     color: var(--text-light);
 }
 
-
 /* Final CTA */
 .final-cta {
     background: var(--soft-pink);
@@ -354,7 +355,6 @@
 }
 
 @media (max-width: 768px) {
-
     /* Hide Trust Builders on small screens */
     .trust-builders {
         display: none;

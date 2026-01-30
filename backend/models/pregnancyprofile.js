@@ -6,22 +6,26 @@ const pregnancyProfileSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
             required: true,
-            unique: true,
+            unique: true
         },
         startDate: {
-            type: Date,
-            required: true,
+            type: Date
         },
         dueDate: {
-            type: Date,
-            required: true,
+            type: Date
         },
         currentWeek: {
             type: Number,
             min: 1,
-            max: 42,
+            max: 42
         },
         babyName: String,
+        location: String,
+        nextVisit: Date,
+        checkupsCount: {
+            type: Number,
+            default: 0
+        }
     },
     { timestamps: true }
 );

@@ -2,7 +2,7 @@
     padding: 2rem;
     max-width: 900px;
     margin: 0 auto;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
 }
 
 .appointments-header {
@@ -38,7 +38,7 @@
     background: var(--white);
     padding: 1.5rem;
     border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px var(--shadow-light);
     margin-bottom: 2rem;
     border: 1px solid var(--accent-pink);
 }
@@ -83,7 +83,7 @@
     background: var(--white);
     padding: 1.5rem;
     border-radius: 18px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 4px 15px var(--shadow-light);
     display: flex;
     align-items: center;
     gap: 1.5rem;

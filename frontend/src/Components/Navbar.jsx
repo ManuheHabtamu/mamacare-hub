@@ -1,8 +1,8 @@
-import React, { useState } from 'react'; // Added useState
-import ButtonPrimary from './Button.jsx';
-import ButtonSecondary from './ButtonSecondary.jsx';
-import '../stylesheets/Navbar.css';
-import logo from '../assets/logo.png';
+import React, { useState } from "react"; // Added useState
+import ButtonPrimary from "./Button.jsx";
+import ButtonSecondary from "./ButtonSecondary.jsx";
+import "../stylesheets/Navbar.css";
+import logo from "../assets/logo.png";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
@@ -23,22 +23,32 @@ const Navbar = () => {
             </div>
 
             {/* Hamburger Icon */}
-            <div className={`hamburger ${isOpen ? 'active' : ''}`} onClick={toggleMenu}>
+            <div className={`hamburger ${isOpen ? "active" : ""}`} onClick={toggleMenu}>
                 <span className="bar"></span>
                 <span className="bar"></span>
                 <span className="bar"></span>
             </div>
 
             {/* Added dynamic class based on state */}
-            <ul className={`nav-links ${isOpen ? 'show' : ''}`}>
-                <li><a href="/#about">About Us</a></li>
-                <li><a href="/#services">Services</a></li>
-                <li><Link to="/contact">Contact</Link></li>
+            <ul className={`nav-links ${isOpen ? "show" : ""}`}>
+                <li>
+                    <a href="/#about">About Us</a>
+                </li>
+                <li>
+                    <a href="/#services">Services</a>
+                </li>
+                <li>
+                    <Link to="/contact">Contact</Link>
+                </li>
             </ul>
 
-            <div className={`nav-btns ${isOpen ? 'show' : ''}`}>
-                <Link to="/signup"><ButtonPrimary text="Sign Up" /></Link>
-                <Link to="/login"><ButtonSecondary text="Login" /></Link>
+            <div className={`nav-btns ${isOpen ? "show" : ""}`}>
+                <Link to="/signup">
+                    <ButtonPrimary text="Sign Up" />
+                </Link>
+                <Link to="/login">
+                    <ButtonSecondary text="Login" />
+                </Link>
             </div>
         </nav>
     );

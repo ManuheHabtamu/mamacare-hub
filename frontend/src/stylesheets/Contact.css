@@ -2,7 +2,7 @@
 
 .contact-hero {
     background: var(--primary-purple);
-    color: white;
+    color: var(--white);
     padding: 40px 4% 60px;
     text-align: center;
     width: 100%;
@@ -43,7 +43,7 @@
     /* Light pink background */
     padding: 16px 14px;
     border-radius: 16px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 6px 18px var(--shadow-light);
     text-align: center;
     transition: transform 0.3s ease;
 }
@@ -63,7 +63,7 @@
     justify-content: center;
     border-radius: 50%;
     margin: 0 auto 8px;
-    color: white;
+    color: var(--white);
 }
 
 .info-card h3 {
@@ -99,7 +99,7 @@
 
 /* Form Styling */
 .contact-form-wrapper {
-    background: white;
+    background: var(--white);
     padding: 0;
     /* Removed padding/background to match "clean" look or keep it simple */
 }
@@ -175,7 +175,7 @@
 }
 
 .faq-item {
-    border-bottom: 1px solid rgba(69, 25, 73, 0.12);
+    border-bottom: 1px solid var(--shadow-purple);
 }
 
 .faq-item summary {
@@ -196,13 +196,13 @@
 }
 
 .faq-item summary::after {
-    content: '+';
+    content: "+";
     font-size: 16px;
     font-weight: 400;
 }
 
 .faq-item[open] summary::after {
-    content: '-';
+    content: "-";
 }
 
 .faq-content {
@@ -225,9 +225,7 @@
     .contact-hero h1 {
         font-size: 36px;
     }
-
 }
-
 
 /* Final CTA Section */
 .contact-final-cta {
@@ -236,14 +234,14 @@
     background: var(--primary-purple);
     border-radius: 20px;
     text-align: center;
-    color: white;
+    color: var(--white);
 }
 
 .contact-final-cta h2 {
     font-size: 20px;
     font-weight: 700;
     margin-bottom: 12px;
-    color: white;
+    color: var(--white);
 }
 
 .contact-final-cta p {
@@ -255,18 +253,20 @@
 .cta-button {
     display: inline-block;
     padding: 10px 24px;
-    background: white;
+    background: var(--white);
     color: var(--primary-purple);
     font-weight: 700;
     border-radius: 10px;
     font-size: 14px;
     text-decoration: none;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
 }
 
 .cta-button:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 20px var(--overlay);
 }
 
 @media (max-width: 1100px) {

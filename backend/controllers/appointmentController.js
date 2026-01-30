@@ -1,32 +1,66 @@
 import Appointment from "../models/appointment.js";
 
-/* ---------- Appointments ---------- */
+/* ---------- Appointment Controllers ---------- */
+
+// Get all appointments for the authenticated user
 export const getAppointments = async (req, res, sendJson) => {
-    const { searchParams } = new URL(req.url, `http://${req.headers.host}`);
-    const userId = searchParams.get("userId") || req.user?.userId;
-    const query = userId ? { userId } : {};
-    sendJson(res, 200, await Appointment.find(query));
-};
-
-export const scheduleAppointment = async (req, res, body, sendJson) => {
-    const userId = body?.userId || req.user?.userId;
-    const { date, time, description } = body || {};
-
-    if (!userId || !date || !time || !description) {
-        return sendJson(res, 400, { error: "userId (or auth), date, time, and description are required" });
+    const userId = req.user?.userId;
+    if (!userId) {
+        return sendJson(res, 401, {error: "Unauthorized"});
     }
 
-    sendJson(res, 201, await Appointment.create({ ...body, userId }));
+    const appointments = await
+        Appointment.find({userId}).sort({date: 1});
+    sendJson(res, 200, appointments);
 };
 
+// Schedule a new appointment
+export const scheduleAppointment = async (req, res, body, sendJson) => {
+    const userId = req.user?.userId;
+    if (!userId) {
+        return sendJson(res, 401, {error: "Unauthorized"});
+    }
+
+    const appointment = await Appointment.create({
+        ...body,
+        userId
+    });
+
+    sendJson(res, 201, appointment);
+};
+
+// Update an existing appointment
 export const updateAppointment = async (req, res, id, body, sendJson) => {
-    const updated = await Appointment.findByIdAndUpdate(id, body, { new: true });
-    if (!updated) return sendJson(res, 404, { error: "Appointment not found" });
-    sendJson(res, 200, updated);
+    const userId = req.user?.userId;
+    if (!userId) {
+        return sendJson(res, 401, {error: "Unauthorized"});
+    }
+
+    const appointment = await Appointment.findOneAndUpdate(
+        {_id: id, userId},
+        body,
+        {new: true}
+    );
+
+    if (!appointment) {
+        return sendJson(res, 404, {error: "Appointment not found"});
+    }
+
+    sendJson(res, 200, appointment);
 };
 
+// Delete an appointment
 export const deleteAppointment = async (req, res, id, sendJson) => {
-    const deleted = await Appointment.findByIdAndDelete(id);
-    if (!deleted) return sendJson(res, 404, { error: "Appointment not found" });
-    sendJson(res, 200, { success: true });
+    const userId = req.user?.userId;
+    if (!userId) {
+        return sendJson(res, 401, {error: "Unauthorized"});
+    }
+
+    const appointment = await Appointment.findOneAndDelete({_id: id, userId});
+
+    if (!appointment) {
+        return sendJson(res, 404, {error: "Appointment not found"});
+    }
+
+    sendJson(res, 200, {message: "Appointment deleted successfully"});
 };
