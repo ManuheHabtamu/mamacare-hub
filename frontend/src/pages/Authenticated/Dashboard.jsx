@@ -6,183 +6,115 @@ import api from "../../utils/api.js";
 import "../../stylesheets/Dashboard.css";
 
 function Dashboard() {
+    // 1. Data State (Where we store info from the database)
     const { user } = useAuth();
-    const [profile, setProfile] = useState(null);
-
-    const [appointments, setAppointments] = useState([]);
-    const [weekData, setWeekData] = useState(null);
+    const [profile, setProfile] = useState(null); //For pregnancy Profile
+    const [appointments, setAppointments] = useState([]);//For appointments
+    const [weekData, setWeekData] = useState(null);  //Stores weekly tips and info
     const [loading, setLoading] = useState(true);
 
+    // 2. Fetching Logic (Runs once when you open the page)
     useEffect(() => {
-        const fetchData = async () => {
+        const loadAllDashboardData = async () => {
             try {
-                // First get profile to know the week
+                // Fetch User Pregnancy Profile (Week Number)
                 const profileRes = await api.get("/pregnancy");
-                const currentProfile = profileRes.data || null;
-                setProfile(currentProfile);
+                setProfile(profileRes.data);
 
-                const appointmentsRes = await api.get("/appointments");
+                // Fetch Upcoming Appointments
+                const apptsRes = await api.get("/appointments");
+                setAppointments(apptsRes.data || []);
 
-                // Now get tips for the specific week if known
-                const weekNum = currentProfile?.currentWeek || 24;
-
-                setAppointments(appointmentsRes.data || []);
-
-                // Fetch week-specific data
+                // Get Weekly Tips based on current week
+                const weekNum = profileRes.data?.currentWeek || 24;
                 const weeksRes = await api.get("/weeks");
-                const allWeeks = weeksRes.data || [];
-                const currentWeekInfo = allWeeks.find((w) => w.weekNumber === weekNum);
-                setWeekData(currentWeekInfo);
+                const currentTip = weeksRes.data.find((w) => w.weekNumber === weekNum);
+                setWeekData(currentTip);
+
             } catch (err) {
-                console.error("Failed to load dashboard data", err);
+                console.error("Dashboard error:", err);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchData();
+        loadAllDashboardData();
     }, []);
 
+    // 3. Loading View
     if (loading) {
         return (
             <div className="dashboard-container">
-                <h1>Loading Dashboard...</h1>
+                <h1>Loading your dashboard...</h1>
             </div>
         );
     }
-    //Safe defaults if sth breaks
-    const safeUser = user || { firstName: "Guest", lastName: "" };
-    const pregnancyWeek = profile?.currentWeek || 24;
-    const dueDate = profile?.dueDate
-        ? new Date(profile.dueDate).toDateString()
-        : "October 15, 2026";
 
-    const appointment = appointments[0];
+    // 4. Variables for Display
+    const firstName = user?.firstName || "Mom";
+    const currentWeek = profile?.currentWeek || 24;
+    const nextAppt = appointments[0]; // Take the first appointment as "Next"
 
     return (
         <div className="dashboard-container">
-            {/* Header */}
+            {/* --- TOP HEADER --- */}
             <div className="dashboard-header">
-                <div className="header-left">
-                    <h1>
-                        Welcome back, {safeUser.firstName} {safeUser.lastName}
-                    </h1>
-                    <p>
-                        {new Date().toDateString()} • Week {pregnancyWeek}
-                    </p>
-                </div>
+                <h1>Welcome back, {firstName}</h1>
+                <p>{new Date().toDateString()} • Week {currentWeek}</p>
             </div>
 
-            {/* Today's Essentials */}
+            {/* --- UPCOMING EVENT --- */}
             <div className="dashboard-section">
-                <h2 className="section-title">Today's Essentials</h2>
+                <h2 className="section-title">Your Next Essential</h2>
                 <div className="card essentials-card">
                     <div className="essential-item">
-                        <div className="time-badge">{appointment?.time || "8:00 AM"}</div>
+                        <div className="time-badge">{nextAppt?.time || "9:00 AM"}</div>
                         <div className="item-content">
-                            <h4>{appointment?.description || "Prenatal Checkup"}</h4>
-                            <p>
-                                {appointment
-                                    ? `${new Date(appointment.date).toDateString()} • ${appointment.time}`
-                                    : "Add your next appointment"}
-                            </p>
+                            <h4>{nextAppt?.description || "Prenatal Checkup"}</h4>
+                            <p>{nextAppt ? new Date(nextAppt.date).toDateString() : "Schedule your next visit"}</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Quick Actions */}
+            {/* --- QUICK ACTION BUTTONS --- */}
             <div className="dashboard-section">
                 <h2 className="section-title">Quick Actions</h2>
                 <div className="actions-grid">
                     <Link to="/appointments" className="action-btn secondary">
-                        <span className="action-icon">
-                            <FaCalendarAlt />
-                        </span>
-                        <span className="action-text">Manage Appointments</span>
+                        <FaCalendarAlt /> <span>Manage Appointments</span>
                     </Link>
                     <a href="tel:+251945545667" className="action-btn primary">
-                        <span className="action-icon">
-                            <FaAmbulance />
-                        </span>
-                        <span className="action-text">Emergency Call</span>
+                        <FaAmbulance /> <span>Emergency Call</span>
                     </a>
-                    <button
-                        className="action-btn secondary"
-                        onClick={() => alert("Symptom Logging coming soon!")}
-                    >
-                        <span className="action-icon">
-                            <FaNotesMedical />
-                        </span>
-                        <span className="action-text">Log Symptoms</span>
-                    </button>
                     <Link to="/growth-tracker" className="action-btn secondary">
-                        <span className="action-icon">
-                            <FaBaby />
-                        </span>
-                        <span className="action-text">Baby Growth</span>
+                        <FaBaby /> <span>Baby Growth</span>
+                    </Link>
+                    <Link to="/profile" className="action-btn secondary">
+                        <FaNotesMedical /> <span>My Profile</span>
                     </Link>
                 </div>
             </div>
 
-            {/* Health & Care */}
+            {/* --- PREGNANCY PROGRESS --- */}
             <div className="dashboard-section">
-                <h2 className="section-title">Health & Care</h2>
+                <h2 className="section-title">Pregnancy Progress</h2>
                 <div className="health-grid">
                     <div className="card progress-card">
-                        <h3>Your Pregnancy</h3>
-                        <div className="week-display">
-                            <div className="week-number">Week {pregnancyWeek}</div>
-                            <div className="week-label">of 40 weeks</div>
-                        </div>
+                        <h3>Week {currentWeek} of 40</h3>
                         <div className="progress-bar-container">
-                            <div
-                                className="progress-bar-fill"
-                                style={{ width: `${(pregnancyWeek / 40) * 100}%` }}
-                            />
+                            <div className="progress-bar-fill" style={{ width: `${(currentWeek / 40) * 100}%` }} />
                         </div>
                     </div>
 
+                    {/* Weekly Tip Card */}
                     {weekData && (
                         <div className="card info-card">
-                            <h3>Baby Development</h3>
-                            <div className="info-grid">
-                                <div className="info-item">
-                                    <span className="info-label">Current Size</span>
-                                    <span className="info-value">{weekData.babySize}</span>
-                                </div>
-                                <div className="info-item">
-                                    <span className="info-label">Weekly Focus</span>
-                                    <span className="info-value">
-                                        Trimester {weekData.trimester}
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="nutrition-section">
-                                <h4>Recommended Foods</h4>
-                                <p className="food-tags">{weekData.recommendedFoods}</p>
-                            </div>
+                            <h3>Weekly Tip: {weekData.babySize}</h3>
+                            <p><strong>Nutrition:</strong> {weekData.recommendedFoods}</p>
+                            <p><strong>Trimester:</strong> {weekData.trimester}</p>
                         </div>
                     )}
-                </div>
-            </div>
-
-            {/* Community & Support */}
-            <div className="dashboard-section">
-                <div className="community-banner">
-                    <h3>Community & Support</h3>
-                    <p>You're not alone in this journey.</p>
-                    <div className="community-buttons">
-                        <button
-                            className="community-btn"
-                            onClick={() => alert("Community Forums coming soon!")}
-                        >
-                            Join Forums
-                        </button>
-                        <Link to="/contact">
-                            <button className="community-btn">Ask a Professional</button>
-                        </Link>
-                    </div>
                 </div>
             </div>
         </div>

@@ -6,13 +6,8 @@ export const getBabyGrowthData = async (req, res, sendJson) => {
 
     let data = await BabyGrowth.findOne({ userId });
     if (!data) {
-        data = await BabyGrowth.create({
-            userId,
-            babyInfo: {},
-            growthRecords: [],
-            milestones: {},
-            healthNotes: {}
-        });
+        data = await BabyGrowth.create({userId, babyInfo: {}, growthRecords: [], milestones: {},
+            healthNotes: {}});
     }
     sendJson(res, 200, data);
 };

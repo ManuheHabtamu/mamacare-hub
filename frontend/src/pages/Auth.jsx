@@ -6,71 +6,51 @@ import { useAuth } from "../context/AuthContext.jsx";
 import api from "../utils/api.js";
 
 const Auth = () => {
-    const location = useLocation();
-    const [isLogin, setIsLogin] = useState(location.pathname !== "/signup");
-    const navigate = useNavigate();
-
-    const { login } = useAuth();
+    // 1. Hooks & State
+    const [isLogin, setIsLogin] = useState(true);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [formData, setFormData] = useState({
-        firstName: "",
-        lastName: "",
-        email: "",
-        password: "",
-        confirmPassword: ""
+        firstName: "", lastName: "", email: "", password: "", confirmPassword: ""
     });
 
+    const navigate = useNavigate();
+    const { login } = useAuth();
+
+    // 2. Handlers
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault();//avoids reload
         setError("");
-
-        if (!formData.email || !formData.password) {
-            setError("Email and password are required.");
-            return;
-        }
+        setLoading(true);
 
         try {
             if (isLogin) {
-                // Login
-                setLoading(true);
-                const response = await api.post("/auth/login", {
+                // LOGIN FLOW
+                const res = await api.post("/auth/login", {
                     email: formData.email,
                     password: formData.password
                 });
-
-                login(response.data.user, response.data.token);
+                login(res.data.user, res.data.token);
                 navigate("/dashboard");
             } else {
-                // Sign Up
+                // SIGNUP FLOW
                 if (formData.password !== formData.confirmPassword) {
-                    setError("Passwords do not match.");
-                    return;
+                    throw new Error("Passwords do not match.");
                 }
-
-                setLoading(true);
-
-                await api.post("/users", {
-                    firstName: formData.firstName,
-                    lastName: formData.lastName,
+                await api.post("/users", formData);
+                const res = await api.post("/auth/login", {
                     email: formData.email,
                     password: formData.password
                 });
-
-                const response = await api.post("/auth/login", {
-                    email: formData.email,
-                    password: formData.password
-                });
-                login(response.data.user, response.data.token);
+                login(res.data.user, res.data.token);
                 navigate("/dashboard");
             }
         } catch (err) {
-            setError(err?.response?.data?.error || "Authentication failed.");
-            console.error(err);
+            setError(err?.response?.data?.error || err.message);
         } finally {
             setLoading(false);
         }
@@ -84,104 +64,48 @@ const Auth = () => {
 
                 {/* Toggle Buttons */}
                 <div className="toggle">
-                    <button
-                        onClick={() => setIsLogin(false)}
-                        className={isLogin ? "toggle-btn" : "toggle-btn active"}
-                    >
-                        Sign Up
-                    </button>
-
-                    <button
-                        onClick={() => setIsLogin(true)}
-                        className={isLogin ? "toggle-btn active" : "toggle-btn"}
-                    >
-                        Login
-                    </button>
+                    <button onClick={() => setIsLogin(false)} className={!isLogin ? "toggle-btn active" : "toggle-btn"}>Sign Up</button>
+                    <button onClick={() => setIsLogin(true)} className={isLogin ? "toggle-btn active" : "toggle-btn"}>Login</button>
                 </div>
 
-                {/* Form */}
                 <form className="form" onSubmit={handleSubmit}>
+                    {/* Only show Name fields during Signup */}
                     {!isLogin && (
                         <div className="name-row">
                             <div className="input-group">
                                 <label>First Name</label>
-                                <input
-                                    type="text"
-                                    name="firstName"
-                                    placeholder="First Name"
-                                    className="input"
-                                    value={formData.firstName}
-                                    onChange={handleChange}
-                                    required
-                                />
+                                <input name="firstName" value={formData.firstName} onChange={handleChange} className="input" required />
                             </div>
                             <div className="input-group">
                                 <label>Last Name</label>
-                                <input
-                                    type="text"
-                                    name="lastName"
-                                    placeholder="Last Name"
-                                    className="input"
-                                    value={formData.lastName}
-                                    onChange={handleChange}
-                                    required
-                                />
+                                <input name="lastName" value={formData.lastName} onChange={handleChange} className="input" required />
                             </div>
                         </div>
                     )}
 
                     <div className="input-group">
                         <label>Email Address</label>
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="email@example.com"
-                            className="input"
-                            value={formData.email}
-                            onChange={handleChange}
-                            required
-                        />
+                        <input type="email" name="email" value={formData.email} onChange={handleChange} className="input" required />
                     </div>
 
                     <div className="input-group">
                         <label>Password</label>
-                        <input
-                            type="password"
-                            name="password"
-                            placeholder="••••••••"
-                            className="input"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                        />
+                        <input type="password" name="password" value={formData.password} onChange={handleChange} className="input" required />
                     </div>
 
                     {!isLogin && (
                         <div className="input-group">
                             <label>Confirm Password</label>
-                            <input
-                                type="password"
-                                name="confirmPassword"
-                                placeholder="••••••••"
-                                className="input"
-                                value={formData.confirmPassword}
-                                onChange={handleChange}
-                                required
-                            />
+                            <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} className="input" required />
                         </div>
                     )}
 
-                    {isLogin && <p className="forgot">Lost Password? Click Here</p>}
+                    {error && <p className="error-message">{error}</p>}
 
-                    {error && (
-                        <p className="forgot" style={{ color: "#dc2626" }}>
-                            {error}
-                        </p>
-                    )}
-
-                    <button type={"submit"} className="submit btnPrimary" disabled={loading}>
-                        {loading ? "Please wait..." : isLogin ? "Confirm Login" : "Confirm Sign Up"}
+                    <button type="submit" className="submit btnPrimary" disabled={loading}>
+                        {loading ? "Processing..." : isLogin ? "Confirm Login" : "Confirm Sign Up"}
                     </button>
+                    {isLogin && <p className="forgot">Lost Password? Click Here</p>}
                 </form>
             </div>
         </div>

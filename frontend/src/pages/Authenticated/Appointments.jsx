@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import api from "../../utils/api.js";
-import { FaClock, FaMapMarkerAlt } from "react-icons/fa";
 import "../../stylesheets/Appointments.css";
+import { FaCalendarPlus, FaEdit, FaTrash, FaMapMarkerAlt, FaClock } from "react-icons/fa";
 
 function Appointments() {
+    // 1. State (Memory)
     const [appointments, setAppointments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState(null);
 
+    // 2. Fetch Logic
     useEffect(() => {
         fetchAppointments();
     }, []);
@@ -17,183 +19,112 @@ function Appointments() {
         try {
             const res = await api.get("/appointments");
             setAppointments(res.data);
-        } catch (err) {
-            console.error("Failed to fetch appointments", err);
-        } finally {
-            setLoading(false);
-        }
+        } catch (err) { console.error(err); }
+        finally { setLoading(false); }
     };
 
+    // 3. Actions (Add, Update, Delete)
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
-        const payload = {
+        const apptData = {
+            description: formData.get("description"),
             date: formData.get("date"),
             time: formData.get("time"),
-            description: formData.get("description"),
-            status: "scheduled"
+            location: formData.get("location")
         };
 
         try {
             if (editingId) {
-                await api.put(`/appointments/${editingId}`, payload);
+                await api.put(`/appointments/${editingId}`, apptData); // Update existing
             } else {
-                await api.post("/appointments", payload);
+                await api.post("/appointments", apptData);
             }
             fetchAppointments();
             setShowForm(false);
             setEditingId(null);
-            e.target.reset();
-        } catch (err) {
-            console.error(err);
+        } catch (err) { console.error(err); }
+    };
+
+    const deleteAppt = async (id) => {
+        if (window.confirm("Delete this appointment?")) {
+            try {
+                await api.delete(`/appointments/${id}`);
+                fetchAppointments();
+            } catch (err) { console.error(err); }
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm("Delete this appointment?")) return;
-        try {
-            await api.delete(`/appointments/${id}`);
-            fetchAppointments();
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
-    const startEdit = (appt) => {
-        setEditingId(appt._id);
-        setShowForm(true);
-        // Form values will be set via defaultValue in JSX for simplicity
-    };
-
-    if (loading)
-        return (
-            <div className="appointments-container">
-                <h1>Loading...</h1>
-            </div>
-        );
+    // 4. View Components
+    if (loading) return <div className="appointments-page"><h1>Loading...</h1></div>;
 
     return (
-        <div className="appointments-container">
-            <header className="appointments-header">
+        <div className="appointments-page">
+            <div className="appointments-header">
                 <h1>My Appointments</h1>
-                <button
-                    className="add-appt-btn"
-                    onClick={() => {
-                        setEditingId(null);
-                        setShowForm(!showForm);
-                    }}
-                >
-                    {showForm ? "Close Form" : "+ Add Appointment"}
+                <button className="add-appt-btn" onClick={() => {
+                    setEditingId(null); // Ensure we're adding, not editing
+                    setShowForm(true);
+                }}>
+                    <FaCalendarPlus /> Add New
                 </button>
-            </header>
+            </div>
 
+            {/* MODAL FORM */}
             {showForm && (
-                <section className="appointment-form-card">
-                    <h2>{editingId ? "Edit Appointment" : "Schedule New Appointment"}</h2>
-                    <form onSubmit={handleSubmit}>
-                        <div className="form-grid">
-                            <div className="input-group">
-                                <label>Date</label>
-                                <input
-                                    name="date"
-                                    type="date"
-                                    required
-                                    defaultValue={
-                                        editingId
-                                            ? appointments
-                                                  .find((a) => a._id === editingId)
-                                                  ?.date?.split("T")[0]
-                                            : ""
-                                    }
-                                />
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h2>{editingId ? "Edit" : "New"} Appointment</h2>
+                        <form onSubmit={handleSubmit}>
+                            <input
+                                name="description"
+                                placeholder="What is it for?"
+                                required
+                                defaultValue={editingId ? appointments.find(a => a._id === editingId)?.description : ""}
+                            />
+                            <input
+                                name="date"
+                                type="date"
+                                required
+                                defaultValue={editingId ? appointments.find(a => a._id === editingId)?.date?.split("T")[0] : ""}
+                            />
+                            <input
+                                name="time"
+                                type="time"
+                                required
+                                defaultValue={editingId ? appointments.find(a => a._id === editingId)?.time : ""}
+                            />
+                            <input
+                                name="location"
+                                placeholder="Where is it?"
+                                required
+                                defaultValue={editingId ? appointments.find(a => a._id === editingId)?.location : ""}
+                            />
+                            <div className="modal-btns">
+                                <button type="submit" className="save-btn">Save</button>
+                                <button type="button" className="cancel-btn" onClick={() => { setShowForm(false); setEditingId(null); }}>Cancel</button>
                             </div>
-                            <div className="input-group">
-                                <label>Time</label>
-                                <input
-                                    name="time"
-                                    type="time"
-                                    required
-                                    defaultValue={
-                                        editingId
-                                            ? appointments.find((a) => a._id === editingId)?.time
-                                            : ""
-                                    }
-                                />
-                            </div>
-                            <div className="input-group full-width">
-                                <label>Description / Purpose</label>
-                                <input
-                                    name="description"
-                                    placeholder="e.g. Monthly Checkup with Dr. Smith"
-                                    required
-                                    defaultValue={
-                                        editingId
-                                            ? appointments.find((a) => a._id === editingId)
-                                                  ?.description
-                                            : ""
-                                    }
-                                />
-                            </div>
-                        </div>
-                        <div className="form-actions">
-                            <button type="submit" className="save-btn">
-                                {editingId ? "Update" : "Schedule"}
-                            </button>
-                            <button
-                                type="button"
-                                className="cancel-btn"
-                                onClick={() => setShowForm(false)}
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </form>
-                </section>
+                        </form>
+                    </div>
+                </div>
             )}
 
-            <div className="appointments-list">
-                {appointments.length === 0 ? (
-                    <div className="no-appointments">
-                        <p>No appointments scheduled yet.</p>
-                    </div>
-                ) : (
-                    appointments
-                        .slice()
-                        .reverse()
-                        .map((appt) => (
-                            <div className="appointment-card" key={appt._id}>
-                                <div className="appt-date">
-                                    <span className="day">{new Date(appt.date).getDate()}</span>
-                                    <span className="month">
-                                        {new Date(appt.date).toLocaleString("default", {
-                                            month: "short"
-                                        })}
-                                    </span>
-                                </div>
-                                <div className="appt-details">
-                                    <h3>{appt.description}</h3>
-                                    <p>
-                                        <FaClock /> {appt.time} • <FaMapMarkerAlt />{" "}
-                                        {appt.location || "Main Clinic"}
-                                    </p>
-                                </div>
-                                <div className="appt-actions">
-                                    <button
-                                        onClick={() => startEdit(appt)}
-                                        className="edit-icon-btn"
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(appt._id)}
-                                        className="delete-icon-btn"
-                                    >
-                                        Delete
-                                    </button>
-                                </div>
+            {/* LIST OF CARDS */}
+            <div className="appointments-grid">
+                {appointments.length === 0 ? <p>No appointments yet.</p> :
+                    appointments.slice().reverse().map((appt) => (
+                        <div className="appointment-card" key={appt._id}>
+                            <div className="appt-info">
+                                <h3>{appt.description}</h3>
+                                <p><FaClock /> {new Date(appt.date).toLocaleDateString()} at {appt.time}</p>
+                                <p><FaMapMarkerAlt /> {appt.location}</p>
                             </div>
-                        ))
-                )}
+                            <div className="appt-actions">
+                                <button onClick={() => { setEditingId(appt._id); setShowForm(true); }}><FaEdit /></button>
+                                <button onClick={() => deleteAppt(appt._id)}><FaTrash /></button>
+                            </div>
+                        </div>
+                    ))}
             </div>
         </div>
     );

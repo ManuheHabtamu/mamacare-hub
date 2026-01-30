@@ -1,15 +1,16 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-// create the context
+// 1. Create the Context (The "Radio Station")
 const AuthContext = createContext();
 
-// provider component
+// 2. The Provider (The "Broadcast Tower")
 export function AuthProvider({ children }) {
+    // --- STATE (Memory for login info) ---
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // runs once when the app loads
+    // --- EFFECTS (Check if user is already logged in) ---
     useEffect(() => {
         const savedUser = localStorage.getItem("user");
         const savedToken = localStorage.getItem("token");
@@ -18,34 +19,34 @@ export function AuthProvider({ children }) {
             setUser(JSON.parse(savedUser));
             setToken(savedToken);
         }
-
-        setLoading(false); //Done
+        setLoading(false);
     }, []);
 
-    // login function
+    // --- ACTIONS (Login, Logout, Update) ---
+
+    // Call this when user submits login form
     const login = (userData, token) => {
         setUser(userData);
         setToken(token);
-
         localStorage.setItem("user", JSON.stringify(userData));
         localStorage.setItem("token", token);
     };
 
-    // logout function
+    // Call this to log out
     const logout = () => {
         setUser(null);
         setToken(null);
-
         localStorage.removeItem("user");
         localStorage.removeItem("token");
     };
 
-    // update user function (for profile updates)
+    // Call this to update user profile info
     const updateUser = (userData) => {
         setUser(userData);
         localStorage.setItem("user", JSON.stringify(userData));
     };
 
+    // --- RENDER (Providing the data to the whole app) ---
     return (
         <AuthContext.Provider
             value={{ user, token, login, logout, updateUser, loading, isAuthenticated: !!token }}
@@ -55,7 +56,7 @@ export function AuthProvider({ children }) {
     );
 }
 
-// custom hook (clean + reusable)
+// 3. Custom Hook (The "Receiver" - easiest way to use the info)
 export function useAuth() {
     return useContext(AuthContext);
 }
