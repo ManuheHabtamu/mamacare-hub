@@ -1,0 +1,48 @@
+.navbar-minimal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 5%;
+    background-color: var(--soft-pink);
+    border-bottom: 1px solid var(--accent-pink);
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.nav-minimal-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+}
+
+.nav-minimal-logo img {
+    height: 28px;
+}
+
+.nav-minimal-logo span {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary-purple);
+}
+
+.nav-minimal-home {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary-purple);
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+
+.nav-minimal-home:hover {
+    opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .navbar-minimal {
+        padding: 16px 5%;
+    }
+}

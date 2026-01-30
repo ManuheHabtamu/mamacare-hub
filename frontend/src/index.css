@@ -1,0 +1,76 @@
+/* src/index.css */
+
+:root {
+  /* Brand Colors */
+  --primary-purple: #451949;
+  --secondary-purple: #7b2c7b;
+  --soft-pink: #fdf2f7;
+  --accent-pink: #f8bbd0;
+
+  /* Neutral Colors */
+  --white: #ffffff;
+  --text-dark: #232323;
+  --text-light: #666666;
+
+  /* Layout Constants */
+  --border-radius: 12px;
+  --shadow: 0 4px 20px rgba(69, 25, 73, 0.08);
+}
+
+/* Base Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  /* Prevent horizontal scroll from 100vw or similar */
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--white);
+  color: var(--text-dark);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* Layout Utilities */
+.container {
+  width: 100%;
+  margin: 0;
+  padding: 0 5%;
+}
+
+.full-width {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}

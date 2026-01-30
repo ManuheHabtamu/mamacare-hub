@@ -1,0 +1,49 @@
+/* Common styles for all buttons */
+.btnBase {
+    padding: 8px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    transition: opacity 0.2s ease;
+    display: inline-block;
+}
+
+.btnBase:hover {
+    opacity: 0.9;
+}
+
+.btnPrimary:hover {
+    color: var(--white);
+    background-color: var(--secondary-purple);
+}
+
+.btnPrimary:active {
+    color: var(--white);
+    background-color: var(--primary-purple);
+}
+
+.btnSecondary:hover {
+    color: var(--primary-purple);
+    background-color: var(--soft-pink);
+}
+
+.btnSecondary:active {
+    color: var(--primary-purple);
+    background-color: var(--accent-pink);
+}
+
+
+/* Primary*/
+.btnPrimary {
+    background-color: var(--primary-purple);
+    border: 2px solid var(--primary-purple);
+    color: var(--white);
+}
+
+/* secondary Button Style */
+.btnSecondary {
+    background-color: transparent;
+    color: var(--primary-purple);
+    border: 2px solid var(--primary-purple);
+}

@@ -1,0 +1,226 @@
+# Database Schema Documentation for ER Diagram
+
+## Entities and Attributes
+
+### 1. User
+**Purpose**: Stores user authentication and basic profile information
+
+| Attribute | Type | Constraints | Description |
+|-----------|------|-------------|-------------|
+| _id | ObjectId | Primary Key | Auto-generated MongoDB ID |
+| fullName | String | Required, Trim | User's full name |
+| email | String | Required, Unique, Lowercase | User's email for login |
+| passwordHash | String | Required | Hashed password (bcrypt) |
+| phone | String | Optional | User's phone number |
+| location | String | Optional | User's location/address |
+| bloodType | String | Optional | User's blood type (e.g., "O+", "A-") |
+| createdAt | Date | Default: Current timestamp | Account creation date |
+| updatedAt | Date | Default: Current timestamp | Last update timestamp |
+
+---
+
+### 2. PregnancyProfile
+**Purpose**: Stores pregnancy-specific information for each user (separated for normalization)
+
+| Attribute | Type | Constraints | Description |
+|-----------|------|-------------|-------------|
+| _id | ObjectId | Primary Key | Auto-generated MongoDB ID |
+| userId | ObjectId | Required, Unique, Foreign Key → User | Reference to User (one-to-one) |
+| startDate | Date | Required | Pregnancy start date (LMP - Last Menstrual Period) |
+| dueDate | Date | Required | Estimated due date |
+| currentWeek | Number | Min: 1, Max: 42 | Current pregnancy week (calculated) |
+| babyName | String | Optional | Chosen baby name |
+| createdAt | Date | Default: Current timestamp | Profile creation date |
+| updatedAt | Date | Default: Current timestamp | Last update timestamp |
+
+---
+
+### 3. Week
+**Purpose**: Reference table for pregnancy weeks (static data)
+
+| Attribute | Type | Constraints | Description |
+|-----------|------|-------------|-------------|
+| _id | ObjectId | Primary Key | Auto-generated MongoDB ID |
+| weekNumber | Number | Required, Unique, Min: 1, Max: 42 | Week number (1-42) |
+| trimester | Number | Required, Enum: [1, 2, 3] | Trimester classification |
+| title | String | Required | Week title (e.g., "Week 24: Baby handles voices!") |
+| description | String | Required | Baby development description |
+| babySize | String | Required | Size comparison (e.g., "Size of an Ear of Corn") |
+| milestones | [String] | Optional | Array of developmental milestones |
+
+---
+
+### 4. HealthTip
+**Purpose**: Stores health tips and advice content linked to specific weeks
+
+| Attribute | Type | Constraints | Description |
+|-----------|------|-------------|-------------|
+| _id | ObjectId | Primary Key | Auto-generated MongoDB ID |
+| weekId | ObjectId | Required, Foreign Key → Week | Reference to Week |
+| title | String | Required | Tip title (e.g., "Stay Hydrated") |
+| summary | String | Required | Brief summary of the tip |
+| content | String | Required | Full detailed content |
+| category | String | Enum: ['nutrition', 'exercise', 'hydration', 'mental-health', 'general'] | Tip category |
+| sourceUrl | String | Optional | External source/reference URL |
+| isActive | Boolean | Default: true | Whether tip is currently active |
+| createdAt | Date | Default: Current timestamp | Tip creation date |
+| updatedAt | Date | Default: Current timestamp | Last update timestamp |
+
+---
+
+### 5. UserTipStatus
+**Purpose**: Tracks which health tips users have seen (engagement tracking)
+
+| Attribute | Type | Constraints | Description |
+|-----------|------|-------------|-------------|
+| _id | ObjectId | Primary Key | Auto-generated MongoDB ID |
+| userId | ObjectId | Required, Foreign Key → User | Reference to User |
+| tipId | ObjectId | Required, Foreign Key → HealthTip | Reference to HealthTip |
+| seenAt | Date | Default: Current timestamp | When user viewed the tip |
+
+**Composite Index**: [(userId, tipId)](file:///c:/Users/Manuhe/Desktop/Web%20Final/frontend/src/App.jsx#6-15) - Unique to prevent duplicate tracking
+
+---
+
+### 6. Reminder
+**Purpose**: Stores user-specific reminders, appointments, and daily tasks
+
+| Attribute | Type | Constraints | Description |
+|-----------|------|-------------|-------------|
+| _id | ObjectId | Primary Key | Auto-generated MongoDB ID |
+| userId | ObjectId | Required, Foreign Key → User | Reference to User who owns this reminder |
+| title | String | Required | Reminder title (e.g., "Prenatal Checkup") |
+| details | String | Optional | Additional details |
+| time | String | Optional | Time of reminder (e.g., "8:00 AM") |
+| type | String | Enum: ['appointment', 'medication', 'hydration', 'general'] | Category of reminder |
+| isCompleted | Boolean | Default: false | Completion status |
+| date | Date | Default: Current timestamp | Date of the reminder |
+| createdAt | Date | Default: Current timestamp | When reminder was created |
+
+---
+
+### 7. Appointment
+**Purpose**: Stores user's prenatal appointments and checkups
+
+| Attribute | Type | Constraints | Description |
+|-----------|------|-------------|-------------|
+| _id | ObjectId | Primary Key | Auto-generated MongoDB ID |
+| userId | ObjectId | Required, Foreign Key → User | Reference to User who owns this appointment |
+| appointmentType | String | Enum: ['checkup', 'ultrasound', 'screening', 'consultation'] | Type of appointment |
+| appointmentDate | Date | Required | Date and time of appointment |
+| doctor | String | Optional | Doctor's name |
+| location | String | Optional | Hospital/clinic name |
+| notes | String | Optional | Additional notes |
+| status | String | Enum: ['scheduled', 'completed', 'cancelled'], Default: 'scheduled' | Appointment status |
+| createdAt | Date | Default: Current timestamp | When appointment was booked |
+| updatedAt | Date | Default: Current timestamp | Last update timestamp |
+
+---
+
+### 8. Contact
+**Purpose**: Stores contact form submissions from users
+
+| Attribute | Type | Constraints | Description |
+|-----------|------|-------------|-------------|
+| _id | ObjectId | Primary Key | Auto-generated MongoDB ID |
+| name | String | Required, Trim | Sender's name |
+| email | String | Required, Lowercase | Sender's email |
+| subject | String | Optional | Subject of the message |
+| message | String | Required | Message content |
+| status | String | Enum: ['new', 'read', 'replied'], Default: 'new' | Admin tracking status |
+| createdAt | Date | Default: Current timestamp | Submission date |
+
+---
+
+## Relationships
+
+### One-to-One Relationships
+
+1. **User ─── PregnancyProfile**
+   - One User has exactly one PregnancyProfile
+   - Each PregnancyProfile belongs to exactly one User
+   - Relationship: `PregnancyProfile.userId` references `User._id`
+   - Cardinality: 1:1
+
+### One-to-Many Relationships
+
+2. **User ──< Reminder**
+   - One User can have many Reminders
+   - Each Reminder belongs to exactly one User
+   - Relationship: `Reminder.userId` references `User._id`
+   - Cardinality: 1:N
+
+3. **User ──< Appointment**
+   - One User can have many Appointments
+   - Each Appointment belongs to exactly one User
+   - Relationship: `Appointment.userId` references `User._id`
+   - Cardinality: 1:N
+
+4. **Week ──< HealthTip**
+   - One Week can have many HealthTips
+   - Each HealthTip belongs to exactly one Week
+   - Relationship: `HealthTip.weekId` references `Week._id`
+   - Cardinality: 1:N
+
+### Many-to-Many Relationships
+
+5. **User ──< UserTipStatus >── HealthTip**
+   - Many Users can see many HealthTips
+   - Tracking table: `UserTipStatus` (junction table)
+   - Relationships: 
+     - `UserTipStatus.userId` references `User._id`
+     - `UserTipStatus.tipId` references `HealthTip._id`
+   - Cardinality: M:N
+
+### Independent Entities
+
+- **Contact**: No direct relationships (standalone submissions)
+
+---
+
+## ER Diagram Notes
+
+### Cardinality Notation
+- **User ─── PregnancyProfile**: One-to-One
+- **User ──< Reminder**: One-to-Many
+- **User ──< Appointment**: One-to-Many
+- **Week ──< HealthTip**: One-to-Many
+- **User ──< UserTipStatus >── HealthTip**: Many-to-Many (via junction table)
+
+### Key Relationships
+- `PregnancyProfile.userId` is a **foreign key** that references `User._id` (unique constraint for 1:1)
+- `Reminder.userId` is a **foreign key** that references `User._id`
+- `Appointment.userId` is a **foreign key** that references `User._id`
+- `HealthTip.weekId` is a **foreign key** that references `Week._id`
+- `UserTipStatus.userId` is a **foreign key** that references `User._id`
+- `UserTipStatus.tipId` is a **foreign key** that references `HealthTip._id`
+- When a User is deleted, their PregnancyProfile, Reminders, Appointments, and UserTipStatus records should cascade delete
+
+### Indexes Needed
+- `User.email`: Unique index for fast login lookups
+- `PregnancyProfile.userId`: Unique index for one-to-one relationship
+- `Week.weekNumber`: Unique index for fast week-based queries
+- `HealthTip.weekId`: Index for efficient week-tip queries
+- `HealthTip.isActive`: Index for filtering active tips
+- `Reminder.userId`: Index for efficient user-reminder queries
+- `Reminder.date`: Index for date-based reminder queries
+- `Appointment.userId`: Index for efficient user-appointment queries
+- `Appointment.appointmentDate`: Index for date-based appointment queries
+- `UserTipStatus (userId, tipId)`: Composite unique index to prevent duplicate tracking
+
+### Data Flow
+1. User signs up → creates `User` record
+2. User completes pregnancy info → creates `PregnancyProfile` record linked to User
+3. System calculates `currentWeek` from `startDate` → fetches corresponding `Week` data
+4. System displays `HealthTip` records linked to current `Week`
+5. When user views a tip → creates `UserTipStatus` record to track engagement
+6. User creates reminders → creates `Reminder` records linked to User
+7. User books appointments → creates `Appointment` records linked to User
+8. Anyone submits contact form → creates [Contact](file:///c:/Users/Manuhe/Desktop/Web%20Final/frontend/src/pages/Contact.jsx#6-121) record (no user link required)
+
+### Design Benefits
+- **Normalization**: Separating User and PregnancyProfile allows users without pregnancy data
+- **Reusability**: Week and HealthTip tables are reusable across all users
+- **Tracking**: UserTipStatus enables personalized content recommendations
+- **Scalability**: Easy to add more tip categories or week-specific content
+- **Data Integrity**: Foreign key constraints ensure referential integrity

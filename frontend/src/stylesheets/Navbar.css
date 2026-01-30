@@ -1,0 +1,124 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 32px;
+    background: linear-gradient(to right, var(--soft-pink), var(--accent-pink));
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    width: 100%;
+}
+
+.nav-logo a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.nav-logo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+}
+
+.nav-logo-img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    margin-left: -10px;
+}
+
+.nav-logo-text {
+    font-weight: bold;
+    color: var(--primary-purple);
+    font-size: 18px;
+
+}
+
+.nav-links {
+    display: flex;
+    gap: 24px;
+    font-weight: 700;
+    color: var(--primary-purple);
+    font-size: 15px;
+}
+
+.nav-links a:hover {
+    color: var(--secondary-purple);
+    text-decoration: underline;
+}
+
+.nav-btns {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-right: -20px;
+}
+
+.hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    gap: 5px;
+}
+
+.hamburger span {
+    width: 24px;
+    height: 3px;
+    background: var(--primary-purple);
+}
+
+
+/*The hamburger thing*/
+@media (max-width: 768px) {
+    .hamburger {
+        display: flex;
+    }
+
+    .nav-links,
+    .nav-btns {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        right: 0;
+        background: transparent;
+        box-shadow: none;
+        padding: 16px;
+        align-items: flex-end;
+        gap: 12px;
+        width: max-content;
+    }
+
+    .nav-links {
+        top: 100%;
+    }
+
+    .nav-btns {
+        top: calc(100% + 140px);
+        /* pushes buttons below links */
+    }
+
+    .nav-links.show,
+    .nav-btns.show {
+        display: flex;
+    }
+
+    .nav-links li {
+        list-style: none;
+    }
+
+    .nav-links a {
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .nav-btns button {
+        font-size: 14px;
+        min-width: 120px;
+    }
+}
